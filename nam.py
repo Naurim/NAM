@@ -33,31 +33,24 @@ def EVAL(sexp, env):
         a0 = sexp[0]
 
         if "rule" == a0:
-            res1, res2 = EVAL(sexp[1], env), EVAL(sexp[2], env)
-            return env.set(res1, res2)
+            return env.set(EVAL(sexp[1], env), EVAL(sexp[2], env))
         elif "quote" == a0:
             return sexp[1]
         elif "local" == a0:
-            a1 = sexp[1]
-            lr = EVAL(a1[0], env)
-            rr = EVAL(a1[1], env)
-
+            a1   = sexp[1]
             sexp = sexp[2]
             env  = Env(env)
-            env.set(lr, rr)
+            env.set(EVAL(a1[0], env), EVAL(a1[1], env))
         elif "filler" == a0:
-            a1 = sexp[1]
-            return types._symbol(a1)
+            return types._symbol(sexp[1])
         elif not le:
             #print("----------------------------------------------")
             sexp = types._list(*map(lambda a: EVAL(a, env), sexp))
             le = True
         elif callable(a0):
-            args = types._list(*map(lambda a: EVAL(a, env), sexp[1:]))
-            sexp = a0(*args)
+            sexp = a0(*sexp[1:])
 
-        else:
-            return sexp
+        else: return sexp
 
 env = Env()
 for rule in core.syms:
@@ -75,12 +68,11 @@ print(REP("(if 0 да нет)"))
 #print(REP("(rule x (quote (- 10 5)))"))
 #print(REP("x"))
 
-print(REP("(rule ((filler x) inf+ (filler y)) (+ x y))"))
-print(REP("(10 inf+ 20)"))
+#print(REP("(rule ((filler x) inf+ (filler y)) (+ x y))"))
+#print(REP("(10 inf+ 20)"))
 
-#print(REP("(rule (quote (factorial 0)) 1)"))
 #print(REP("(rule (factorial (filler x)) (quote (* x (factorial (- x 1)))))"))
-#print(REP("(rule x 3)"))
+#print(REP("(rule (quote (factorial 0)) 1)"))
 
 #print(REP("(rule (while (filler cond) (filler body)) (quote (rule (while 1 (filler lala) (while cond body)))))"))
 
@@ -91,5 +83,5 @@ print(REP("(10 inf+ 20)"))
 
 #print(REP("(factorial (- x 1))"))
 
-#print(REP("(+ 1 (+ 2 (+ 3 4)))"))
-#print(REP("(* 3 (* 2 (* 1 1)))"))
+print(REP("(+ 1 (+ 2 (+ 3 4)))"))
+print(REP("(* 3 (* 2 (* 1 1)))"))

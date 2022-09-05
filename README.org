@@ -41,7 +41,7 @@ Now NAM has several keywords:
 ~(123 321 456)~ -> (123 321 456)
 
 
-~(rule (test (filler x))~ (successfully x))
+~(rule (test (filler x)) (successfully x))~
 
 ~(test 123)~ -> (successfully 123)
 
