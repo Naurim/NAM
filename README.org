@@ -1,0 +1,66 @@
+* NAM - language of Markov algorithm
+NAM - language, based on Normal Markov Algorithm (NMA) and
+S-expressions.
+
+The prototype is written in python, but after solving known problems
+it will be rewritten into a compiled language.
+
+* How to use
+Now NAM has several keywords:
+- ~Rule~ - which allows you to create a new rule
+- ~Quote~ - which returns the following expression not processed
+- ~Local~ - which creates a local rule that does not operate outside of
+  the nested expression
+- ~Filler~ - which creates a named placeholder. This allows you to pass
+  arguments to the rules
+
+~(rule x 100)~
+
+~x~ -> 100
+
+~(x)~ -> (100)
+
+~((x))~ -> ((100))
+
+
+~(rule x (- 10 5))~ -> (rule x 5)
+
+~(rule y (quote (-10 5)))~ -> (rule y (- 10 5))
+
+~x~ -> 5
+
+~y~ -> (- 10 5) -> 5
+
+
+~(rule (123 321) 567)~
+
+~(123 321)~ -> 567
+
+~123 321~ -> 123 321
+
+~(123 321 456)~ -> (123 321 456)
+
+
+~(rule (test (filler x))~ (successfully x))
+
+~(test 123)~ -> (successfully 123)
+
+~(test abc)~ -> (successfully abc)
+
+
+And a few mathematical functions in prefix notation, ~+, -, *, /~,
+taking two arguments.
+
+~(+ 5 10)~ -> 15
+
+~(+ 1 (+ 2 3))~ -> 6
+
+~(- 5 3)~ -> 2
+
+~(/ 10 2)~ -> 5
+
+~(* 4 8)~ -> 32
+
+** Known issues:
+- Inability to create loops and recursions
+- Incorrect reading of code files
