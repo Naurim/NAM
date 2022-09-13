@@ -36,24 +36,24 @@ def make_tokenizer(tokens):
         if cache: acc.append(cache)
         return acc
     return clos
-tokenize = make_tokenizer('()')
+tokenize = make_tokenizer('()\'')
 
 def read_atom(reader):
     token = reader.next()
-    try:               return int(token)
-    except ValueError: return _atom(token)
+    if token == "nil":     return None
+    else:
+        try:               return int(token)
+        except ValueError: return _atom(token)
 
 def read_list(reader):
     sexp = _list()
     token = reader.next()
-
-    start,end = '(',')'
      
-    if token != start: raise Exception("expected '" + start + "'")
+    if token != '(': raise Exception("expected '('")
 
     token = reader.peek()
-    while token != end:
-        if not token: raise Exception("expected '" + end + "', got EOF")
+    while token != ')':
+        if not token: raise Exception("expected ')', got EOF")
         sexp.append(read_form(reader))
         token = reader.peek()
     reader.next()
@@ -62,9 +62,13 @@ def read_list(reader):
 def read_form(reader):
     token = reader.peek()
 
-    if   token == ')': raise Exception("unexpected ')'")
-
+    if token == '\'':
+        reader.next()
+        return _list(_atom('quote'), read_form(reader))
+    
+    elif token == ')': raise Exception("unexpected ')'")
     elif token == '(': return read_list(reader)
+    
     else:              return read_atom(reader);
 
 def read_str(str):

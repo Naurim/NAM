@@ -24,20 +24,26 @@ class Env():
         for rule in self.rules:
             if key == rule[1]: return rule[0]
 
+    def glob(self):
+        if self.outer: return self.outer.glob()
+        else:          return self
     def find(self, key):
         if self.search(key): return self
         elif self.outer:     return self.outer.find(key)
         else:                return None
     def find_left(self, key):
         if self.left(key): return self
-        elif self.outer:   return self.outer.find(key)
+        elif self.outer:   return self.outer.find_left(key)
         else:              return None
 
     def set(self, rl, rr):
         rule = [rl, rr]
         self.rules.append(rule)
         return rl
-
+    def set_glob(self, rl, rr):
+        env = self.glob()
+        return env.set(rl, rr)
+    
     def get(self, key):
         env = self.find(key)
         if not env: raise Exception(key, " not found")
