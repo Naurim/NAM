@@ -55,5 +55,5 @@ taking two arguments.
 (* 4 8)       -> 32
 #+end_src
 ** Known issues:
-- Inability to create loops and recursions
+- Inability to create loops
 - Only one expression can be evaluated at a time

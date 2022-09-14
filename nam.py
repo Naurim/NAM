@@ -10,6 +10,8 @@ def EVAL(sexp, env):
             #print("-- rule", printer._pr_str(sexp))
             le = False
             if types._listP(sexp):
+                sexp  = types._list(*map(lambda a: EVAL(a, env), sexp))
+                #print("---- sexp el", printer._pr_str(sexp))
                 right = env.get(sexp)
                 left  = env.get_left(right)
                 locs  = []
@@ -25,8 +27,10 @@ def EVAL(sexp, env):
                 sexp = right
             else:
                 sexp = env.get(sexp)
-                
-        #else: print("---- replaced", printer._pr_str(sexp))
+
+        #print("---- replaced", printer._pr_str(sexp))
+        #print(env.rules)
+
         if not types._listP(sexp):
             return sexp
 
@@ -76,14 +80,11 @@ print(REP("(rule ((filler x) inf+ (filler y)) \
                  '(+ x y))"))
 print(REP("(10 inf+ 20)"))
 
-# recursion, does not work
-#print(REP("(rule (factorial (filler x)) \
-#                 '(* x (factorial (- x 1))))"))
-#print(REP("(rule '(factorial 0) 1)"))
-
-#print("----------------------------------------------")
-
-#print(REP("(factorial 1)"))
+# recursion
+print(REP("(rule (factorial 0) 1)"))
+print(REP("(rule (factorial (filler x)) \
+                 '(* x (factorial (- x 1))))"))
+print(REP("(factorial 3)"))
 
 # loop, does not work
 #print(REP("(rule (while (filler cond) (filler body))  \

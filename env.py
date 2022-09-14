@@ -9,13 +9,13 @@ class Env():
             for rule in self.rules:
                 rl = rule[0]
                 lk = len(key)
-                if lk == len(rl):
+                if key == rl: return rule[1]
+                elif lk == len(rl):
                     for i in range(lk):
                         if (not _symbolP(rl[i])) and (key[i] != rl[i]):
                             break
                     else:
                         return rule[1]
-                elif key == rl: return rule[1]
             return False
         else:
             for rule in self.rules:
